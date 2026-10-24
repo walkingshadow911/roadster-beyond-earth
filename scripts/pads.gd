@@ -2,12 +2,16 @@ class_name PadController
 extends Node
 
 signal charged
+signal boosted
 signal docked
 
 const DOCK_MAX_SPEED := 110.0
 const DOCK_MAX_ANGLE := 0.22        # radians, ~12.6 degrees
 const DOCK_HOLD_TIME := 1.1
 const SPAWN_LIFT := 60.0            # how far above a pad the car respawns from
+
+const BOOST_FORWARD := 420.0        # forward speed kick, in the car's facing direction
+const BOOST_LIFT := 160.0           # upward kick, in world space, so it launches even off a flat pad
 
 var track: TrackGenerator
 var car: Car
@@ -22,10 +26,13 @@ func setup(p_track: TrackGenerator, p_car: Car) -> void:
 
 	for pad in track.pads:
 		var area: Area2D = pad["area"]
-		if pad["type"] == "charge":
-			area.body_entered.connect(_on_charge_entered.bind(area))
-		else:
-			dock_area = area
+		match pad["type"]:
+			"charge":
+				area.body_entered.connect(_on_charge_entered.bind(area))
+			"boost":
+				area.body_entered.connect(_on_boost_entered)
+			_:
+				dock_area = area
 
 
 func _on_charge_entered(body: Node, area: Area2D) -> void:
@@ -34,6 +41,14 @@ func _on_charge_entered(body: Node, area: Area2D) -> void:
 	car.battery = min(Car.MAX_BATTERY, car.battery + 45.0)
 	car.spawn_position = area.global_position - Vector2(0, SPAWN_LIFT)
 	charged.emit()
+
+
+func _on_boost_entered(body: Node) -> void:
+	if body != car:
+		return
+	var impulse := Vector2.RIGHT.rotated(car.rotation) * BOOST_FORWARD + Vector2.UP * BOOST_LIFT
+	car.apply_central_impulse(impulse)
+	boosted.emit()
 
 
 func _process(delta: float) -> void:

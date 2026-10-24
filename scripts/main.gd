@@ -73,6 +73,7 @@ func _start_game() -> void:
 	add_child(pads)
 	pads.setup(track, car)
 	pads.charged.connect(_on_charged)
+	pads.boosted.connect(_on_boosted)
 	pads.docked.connect(_on_docked)
 
 	camera = Camera2D.new()
@@ -112,6 +113,12 @@ func _on_charged() -> void:
 	hud.show_popup("+ SUPERCHARGE", Color(0.2, 0.9, 1.0))
 	_spawn_burst(car.global_position, Color(0.2, 0.9, 1.0))
 	audio.play_charge()
+
+
+func _on_boosted() -> void:
+	hud.show_popup("LUDICROUS BOOST!", Color(0.85, 0.2, 1.0))
+	_spawn_burst(car.global_position, Color(0.85, 0.2, 1.0))
+	audio.play_boost()
 
 
 func _on_crashed() -> void:

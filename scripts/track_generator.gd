@@ -70,11 +70,18 @@ func _plan_track() -> void:
 
 	var gap_w: float = planet["gap_width"]
 	var x := 1800.0
+	var gap_index := 0
 	while x < TRACK_LENGTH - 900.0:
+		if gap_index % 2 == 1:
+			var boost_x: float = x - 180.0
+			flat_zones.append([boost_x - 140.0, boost_x + 140.0])
+			pads.append({"x": boost_x, "type": "boost"})
+
 		gaps.append([x, x + gap_w])
 		var pad_x: float = x + gap_w + 260.0
 		flat_zones.append([pad_x - PAD_FLAT_WIDTH, pad_x + PAD_FLAT_WIDTH])
 		pads.append({"x": pad_x, "type": "charge"})
+		gap_index += 1
 		x = pad_x + 1800.0 + randf() * 900.0
 
 	flat_zones.append([TRACK_LENGTH - 600.0, TRACK_LENGTH + 200.0])
@@ -188,14 +195,20 @@ func _add_terrain_segment(parent: Node2D, p0: Vector2, p1: Vector2) -> void:
 func _add_pad(parent: Node2D, pad: Dictionary) -> void:
 	var px: float = pad["x"]
 	var py := height_at(px)
-	var is_dock: bool = pad["type"] == "dock"
+	var pad_type: String = pad["type"]
 	var w := 90.0
 
 	var visual := Polygon2D.new()
 	visual.polygon = PackedVector2Array([
 		Vector2(-w, -6), Vector2(w, -6), Vector2(w, 6), Vector2(-w, 6),
 	])
-	visual.color = Color(1.0, 0.85, 0.2) if is_dock else Color(0.2, 0.9, 1.0)
+	match pad_type:
+		"dock":
+			visual.color = Color(1.0, 0.85, 0.2)
+		"boost":
+			visual.color = Color(0.85, 0.2, 1.0)
+		_:
+			visual.color = Color(0.2, 0.9, 1.0)
 	visual.position = Vector2(px, py - 6)
 	parent.add_child(visual)
 

@@ -21,7 +21,7 @@
 ## Rules
 
 - Battery drains while driving/thrusting. Supercharger pads recharge it and set your respawn point.
-- Gaps can't be driven across — thrust over them.
+- Gaps can't be driven across — thrust over them, or hit a magenta boost pad (on alternating gaps) at speed for a free launch.
 - Spin in the air; land wheels-down on a clean 360° multiple to score. Land mid-spin and you crash.
 - Earth/Moon/Mars differ in gravity, terrain, and gap width.
 - Finish by landing slow and level on the dock pad and holding briefly.

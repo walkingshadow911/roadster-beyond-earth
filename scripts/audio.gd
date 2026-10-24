@@ -91,6 +91,10 @@ func play_charge() -> void:
 	_play_one_shot(make_tone(660.0, 0.12, 0.45, "sine"))
 
 
+func play_boost() -> void:
+	_play_one_shot(make_arpeggio([300.0, 950.0], 0.09, 0.55))
+
+
 func play_dock() -> void:
 	_play_one_shot(make_arpeggio([523.0, 659.0, 784.0], 0.14, 0.5))
 
