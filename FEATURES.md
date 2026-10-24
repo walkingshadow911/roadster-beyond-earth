@@ -24,7 +24,7 @@
 - [x] **Phase 2 — Pads & rules**: `pads.gd` + `main.gd` state machine. Recharge, checkpoints, respawn, dock success.
 - [x] **Phase 3 — HUD & menu**: `hud.gd`, `menu.gd`. Planet-select screen, battery/score/distance display, trick popups, crash/dock overlays.
 - [x] **Phase 4 — Polish**: ground shading/texture, car visual detail, thruster/trick/charge particles, crash screen shake, synthesized sound (`audio.gd`, no audio files needed).
-- [ ] **Phase 5 — Git**: `git init`, commit working baseline, optional GitHub remote.
+- [x] **Phase 5 — Git**: `git init`, committed working baseline. (GitHub remote not set up — optional, needs your account.)
 - [ ] **Phase 6 — Stretch**: more planets, car upgrades/cosmetics, second gap mechanic, best-score persistence, mobile touch controls.
 
 Each phase is built, then tested in the Godot editor, before moving to the next.
