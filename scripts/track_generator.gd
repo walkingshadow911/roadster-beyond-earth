@@ -49,7 +49,7 @@ func _build_ground_texture() -> ImageTexture:
 	for y in range(size):
 		for x in range(size):
 			var n := noise.get_noise_2d(float(x), float(y))
-			var t := clamp((n + 1.0) * 0.5, 0.0, 1.0)
+			var t: float = clamp((n + 1.0) * 0.5, 0.0, 1.0)
 			var speckle := randf_range(-0.045, 0.045)
 			var c := base_color.lerp(top_color, t * 0.35)
 			c = Color(
