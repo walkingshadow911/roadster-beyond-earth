@@ -46,4 +46,5 @@ Tunable values (drive force, thrust power, spring stiffness, scoring, etc.) are 
 
 - `project.godot` — project settings, start scene.
 - `icon.svg` / `icon.svg.import` — project icon.
+- `assets/` — image/art files (e.g. the background city skyline), referenced by path from `track_generator.gd`.
 - `.godot/` — editor cache, not committed.

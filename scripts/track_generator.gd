@@ -9,6 +9,8 @@ const CAP_HEIGHT := 14.0
 const FLAT_BLEND := 160.0
 const PAD_FLAT_WIDTH := 220.0
 const TEXTURE_TILE_SIZE := 128.0
+const CITY_BG_SCALE := 0.7
+const CITY_BG_Y_OFFSET := 280.0
 
 var planet: Dictionary
 var planet_key: String
@@ -149,6 +151,26 @@ func _build_background() -> void:
 			star.color = Color(1, 1, 1, randf_range(0.3, 0.9))
 			star.position = Vector2(randf_range(-500, TRACK_LENGTH + 500), randf_range(-1100, -250))
 			bg.add_child(star)
+
+	_build_city_skyline(bg)
+
+
+func _build_city_skyline(parent: Node2D) -> void:
+	var city_texture := load("res://assets/background_city.png") as Texture2D
+	if not city_texture:
+		return
+
+	var tile_w: float = city_texture.get_width() * CITY_BG_SCALE
+	var start_x := -600.0
+	var count := int(ceil((TRACK_LENGTH + 1200.0) / tile_w)) + 1
+	for i in range(count):
+		var spr := Sprite2D.new()
+		spr.texture = city_texture
+		spr.centered = false
+		spr.scale = Vector2(CITY_BG_SCALE, CITY_BG_SCALE)
+		spr.position = Vector2(start_x + i * tile_w, CITY_BG_Y_OFFSET)
+		spr.modulate = Color(1, 1, 1, 0.8)
+		parent.add_child(spr)
 
 
 func _build_terrain() -> void:
