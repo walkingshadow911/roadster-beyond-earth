@@ -8,9 +8,11 @@ const BASE_Y := 600.0
 const CAP_HEIGHT := 14.0
 const FLAT_BLEND := 160.0
 const PAD_FLAT_WIDTH := 220.0
+const TEXTURE_TILE_SIZE := 128.0
 
 var planet: Dictionary
 var planet_key: String
+var ground_texture: ImageTexture
 
 var gaps: Array = []
 var flat_zones: Array = []
@@ -27,9 +29,36 @@ func generate(p: Dictionary, key: String) -> void:
 	for c in get_children():
 		c.queue_free()
 
+	ground_texture = _build_ground_texture()
 	_plan_track()
 	_build_background()
 	_build_terrain()
+
+
+func _build_ground_texture() -> ImageTexture:
+	var size := int(TEXTURE_TILE_SIZE)
+	var noise := FastNoiseLite.new()
+	noise.seed = randi()
+	noise.frequency = 0.06
+	noise.fractal_octaves = 4
+
+	var base_color: Color = planet["ground"]
+	var top_color: Color = planet["ground_top"]
+
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for y in range(size):
+		for x in range(size):
+			var n := noise.get_noise_2d(float(x), float(y))
+			var t := clamp((n + 1.0) * 0.5, 0.0, 1.0)
+			var speckle := randf_range(-0.045, 0.045)
+			var c := base_color.lerp(top_color, t * 0.35)
+			c = Color(
+				clamp(c.r + speckle, 0.0, 1.0),
+				clamp(c.g + speckle, 0.0, 1.0),
+				clamp(c.b + speckle, 0.0, 1.0),
+			)
+			img.set_pixel(x, y, c)
+	return ImageTexture.create_from_image(img)
 
 
 func height_at(x: float) -> float:
@@ -171,6 +200,12 @@ func _add_terrain_segment(parent: Node2D, p0: Vector2, p1: Vector2) -> void:
 	var poly := Polygon2D.new()
 	poly.polygon = quad
 	poly.color = base_color
+	poly.texture = ground_texture
+	poly.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	var uv := PackedVector2Array()
+	for v in quad:
+		uv.append(v / TEXTURE_TILE_SIZE)
+	poly.uv = uv
 	parent.add_child(poly)
 
 	var top_color: Color = planet["ground_top"]
